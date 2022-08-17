@@ -53,7 +53,7 @@ array2[c] = b;
 }
 r++;
 }
-print_array(array2, (k + 1));
+print_array(array2, (k + 1))
 newArray = malloc(sizeof(int) * size);
 if (!newArray)
 {
