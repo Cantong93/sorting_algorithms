@@ -1,72 +1,49 @@
 #include "sort.h"
 /**
-*integer_count- number of times integer appears in an array
-*
-*@array: array given
-*@size: size of array
-*@range: number to check for occurance
-*
-*Return: number of occurances
-*/
-int integer_count(int *array, size_t size, int range)
-{
-	int total = 0;
-	size_t i;
-
-	for (i = 0; i < size; i++)
-	{
-		if (array[i] == range)
-			total++;
-	}
-	return (total);
-}
-
-/**
-*counting_sort - counting sort algorithm
-*
-*@array: array to be sorted
-*@size: size of the array
-*/
+ * counting_sort - Is a sorting algorithm that sorts the elements
+ * of an array by counting the number of occurrences of each unique
+ * element in the array. The count is stored in an auxiliary array
+ * and the sorting is done by mapping the count as an index of the
+ * auxiliary array.
+ * @array: Array of data to be sorted
+ * @size: Size of the array
+ */
 void counting_sort(int *array, size_t size)
 {
-	int k = 0, b = 0, r = 0;
-	size_t i, c;
-	int *array2, *newArray;
+	unsigned int i = 1, index = 0, max_ = array[0];
+	int *buffer = NULL, *copy;
 
 	if (!array || size < 2)
 		return;
-	for (i = 0; i < size; i++)
+	while (i < size)
 	{
-		if (array[i] > k)
-		{
-			k = array[i];
-		}
+		if (max_ < (unsigned int)array[i])
+			max_ = array[i];
+		i++;
 	}
-	array2 = malloc(sizeof(int) * (k + 1));
-	if (!array2)
-		return;
-	for (c = 0; c < ((size_t)k + 1); c++)
+	buffer = malloc(sizeof(int) * (++max_));
+	i = 0;
+	while (i < max_)
+		buffer[i] = '\0', i++;
+	i = 0;
+	while (i < size)
+		buffer[array[i]]++, i++;
+	i = 1;
+	while (i < max_)
+		buffer[i] = buffer[i] + buffer[i - 1], i++;
+	print_array(buffer, max_);
+	i = 0;
+	copy = malloc(sizeof(int) * size);
+	while (i < size)
 	{
-		if (c == 0)
-			array2[c] = integer_count(array, size, r);
-		else
-		{
-			b = array2[c - 1] + integer_count(array, size, r);
-			array2[c] = b;
-		}
-		r++;
+		index = --buffer[array[i]];
+		copy[index] = array[i];
+		i++;
 	}
-	print_array(array2, (k + 1));
-	newArray = malloc(sizeof(int) * size);
-	if (!newArray)
-	{
-		free(array2);
-		return;
-	}
-	for (i = 0; i < size; i++)
-		newArray[array2[array[i]]-- - 1] = array[i];
-	for (i = 0; i < size; i++)
-		array[i] = newArray[i];
-	free(newArray);
-	free(array2);
+	i = 0;
+	while (i < size)
+		array[i] = copy[i], i++;
+
+	free(copy);
+	free(buffer);
 }
